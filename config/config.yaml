@@ -1,0 +1,13 @@
+server:
+  host: 0.0.0.0
+  port: 8080
+
+logging:
+  level: info
+  format: detailed
+
+payment:
+  app_id: your-app-id
+  mch_id: your-merchant-id
+  api_key: your-api-key
+  notify_url: https://example.com/api/payments/wechat/callback
