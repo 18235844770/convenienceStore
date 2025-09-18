@@ -6,7 +6,7 @@ import (
 	"convenienceStore/internal/model"
 )
 
-// UserService defines behaviours around user accounts and addresses.
+// UserService 定义与用户账号及地址相关的业务行为。
 type UserService interface {
 	WeChatLogin(ctx context.Context, code string) (*model.User, error)
 	BindUser(ctx context.Context, user *model.User) error
@@ -20,7 +20,7 @@ type userService struct {
 	deps Dependencies
 }
 
-// NewUserService provides a baseline implementation of UserService.
+// NewUserService 提供 UserService 的基础实现。
 func NewUserService(deps Dependencies) UserService {
 	return &userService{deps: deps}
 }

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// Config defines credentials necessary to interact with WeChat Pay.
+// Config 定义接入微信支付所需的凭据。
 type Config struct {
 	AppID     string `mapstructure:"app_id"`
 	MchID     string `mapstructure:"mch_id"`
@@ -15,14 +15,14 @@ type Config struct {
 	NotifyURL string `mapstructure:"notify_url"`
 }
 
-// OrderRequest describes the minimal payload required to create a payment order.
+// OrderRequest 描述创建支付订单所需的最小请求载荷。
 type OrderRequest struct {
 	OrderID string
 	Amount  int64
 	Subject string
 }
 
-// OrderResponse encapsulates fields returned by the payment provider for client-side usage.
+// OrderResponse 封装支付服务方返回的、用于客户端的字段。
 type OrderResponse struct {
 	PrepayID  string
 	NonceStr  string
@@ -30,7 +30,7 @@ type OrderResponse struct {
 	Signature string
 }
 
-// ClientConfig converts gateway response into a frontend friendly key-value map.
+// ClientConfig 将网关响应转换为前端易用的键值对。
 func (r OrderResponse) ClientConfig() map[string]string {
 	return map[string]string{
 		"prepay_id": r.PrepayID,
@@ -40,13 +40,13 @@ func (r OrderResponse) ClientConfig() map[string]string {
 	}
 }
 
-// CallbackResult summarizes the provider callback payload.
+// CallbackResult 汇总支付服务回调的核心字段。
 type CallbackResult struct {
 	OrderID string
 	Success bool
 }
 
-// WeChatClient abstracts access to WeChat Pay.
+// WeChatClient 抽象出对微信支付的调用接口。
 type WeChatClient interface {
 	CreateOrder(ctx context.Context, request OrderRequest) (OrderResponse, error)
 	HandleCallback(ctx context.Context, payload []byte) (CallbackResult, error)
@@ -57,7 +57,7 @@ type weChatClient struct {
 	logger *log.Logger
 }
 
-// NewWeChatClient produces a stubbed implementation suitable for early development.
+// NewWeChatClient 提供适合早期开发使用的桩实现。
 func NewWeChatClient(cfg Config, logger *log.Logger) WeChatClient {
 	return &weChatClient{cfg: cfg, logger: logger}
 }

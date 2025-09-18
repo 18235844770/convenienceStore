@@ -7,14 +7,14 @@ import (
 	"convenienceStore/pkg/payment"
 )
 
-// Dependencies bundles the cross-cutting concerns required by the service layer.
+// Dependencies 汇集服务层所需的横切依赖。
 type Dependencies struct {
 	Config  *config.AppConfig
 	Logger  *log.Logger
 	Payment payment.WeChatClient
 }
 
-// Services exposes high level service singletons for consumers.
+// Services 对外暴露各领域的服务单例。
 type Services struct {
 	User     UserService
 	Product  ProductService
@@ -24,7 +24,7 @@ type Services struct {
 	Delivery DeliveryService
 }
 
-// NewServices wires the service layer graph.
+// NewServices 负责装配整个服务层依赖关系。
 func NewServices(deps Dependencies) Services {
 	orderService := NewOrderService(deps)
 

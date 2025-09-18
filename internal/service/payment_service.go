@@ -2,7 +2,7 @@ package service
 
 import "context"
 
-// PaymentService handles payment orchestration tasks.
+// PaymentService 负责支付流程的编排。
 type PaymentService interface {
 	HandleWeChatCallback(ctx context.Context, payload []byte) error
 }
@@ -12,7 +12,7 @@ type paymentService struct {
 	orderService OrderService
 }
 
-// NewPaymentService wires payment functionality on top of the order service.
+// NewPaymentService 在订单服务基础上装配支付能力。
 func NewPaymentService(deps Dependencies, orderService OrderService) PaymentService {
 	return &paymentService{deps: deps, orderService: orderService}
 }

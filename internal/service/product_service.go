@@ -6,7 +6,7 @@ import (
 	"convenienceStore/internal/model"
 )
 
-// ProductService exposes catalog operations.
+// ProductService 提供商品目录相关的业务能力。
 type ProductService interface {
 	ListProducts(ctx context.Context) ([]model.Product, error)
 	GetProduct(ctx context.Context, productID string) (*model.Product, error)
@@ -17,7 +17,7 @@ type productService struct {
 	deps Dependencies
 }
 
-// NewProductService creates a new ProductService implementation.
+// NewProductService 创建新的 ProductService 实现。
 func NewProductService(deps Dependencies) ProductService {
 	return &productService{deps: deps}
 }

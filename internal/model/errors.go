@@ -1,6 +1,6 @@
 package model
 
-// ErrorCode enumerates domain specific error identifiers.
+// ErrorCode 枚举领域内使用的错误标识。
 type ErrorCode string
 
 const (
@@ -14,7 +14,7 @@ const (
 	ErrCodePaymentFailed    ErrorCode = "ERR_PAYMENT_FAILED"
 )
 
-// KnownErrorCodes simplifies exposing the supported error codes through documentation endpoints.
+// KnownErrorCodes 方便在文档接口中暴露支持的错误码。
 var KnownErrorCodes = []ErrorCode{
 	ErrCodeInvalidParameter,
 	ErrCodeUserNotFound,

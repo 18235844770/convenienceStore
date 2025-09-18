@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// HandlerSet aggregates all HTTP handlers required by the application.
+// HandlerSet 汇总应用所需的全部 HTTP 处理器。
 type HandlerSet struct {
 	User     *handler.UserHandler
 	Product  *handler.ProductHandler
@@ -16,7 +16,7 @@ type HandlerSet struct {
 	Delivery *handler.DeliveryHandler
 }
 
-// RegisterRoutes wires every domain specific route to the corresponding handler.
+// RegisterRoutes 将各领域的路由绑定到对应处理器。
 func RegisterRoutes(engine *gin.Engine, handlers HandlerSet) {
 	api := engine.Group("/api")
 

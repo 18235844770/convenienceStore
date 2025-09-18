@@ -1,6 +1,6 @@
 package model
 
-// CartItem represents a single product entry within a user cart.
+// CartItem 表示用户购物车中的单个商品项。
 type CartItem struct {
 	ID        string  `json:"id"`
 	UserID    string  `json:"user_id"`

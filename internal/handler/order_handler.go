@@ -9,17 +9,17 @@ import (
 	"convenienceStore/internal/service"
 )
 
-// OrderHandler exposes order lifecycle endpoints.
+// OrderHandler 提供订单生命周期相关的接口。
 type OrderHandler struct {
 	service service.OrderService
 }
 
-// NewOrderHandler instantiates an OrderHandler.
+// NewOrderHandler 实例化 OrderHandler。
 func NewOrderHandler(service service.OrderService) *OrderHandler {
 	return &OrderHandler{service: service}
 }
 
-// CreateOrder generates a new order draft.
+// CreateOrder 生成新的订单草稿。
 func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	var req model.Order
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -36,7 +36,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	c.JSON(http.StatusCreated, order)
 }
 
-// GetOrder returns order details.
+// GetOrder 返回订单详情。
 func (h *OrderHandler) GetOrder(c *gin.Context) {
 	order, err := h.service.GetOrder(c.Request.Context(), c.Param("id"))
 	if err != nil {
@@ -47,7 +47,7 @@ func (h *OrderHandler) GetOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, order)
 }
 
-// PayOrder initiates payment for the order.
+// PayOrder 发起订单支付。
 func (h *OrderHandler) PayOrder(c *gin.Context) {
 	paymentInfo, err := h.service.PayOrder(c.Request.Context(), c.Param("id"))
 	if err != nil {
@@ -58,7 +58,7 @@ func (h *OrderHandler) PayOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, paymentInfo)
 }
 
-// CancelOrder cancels the order before shipment.
+// CancelOrder 在发货前取消订单。
 func (h *OrderHandler) CancelOrder(c *gin.Context) {
 	if err := h.service.CancelOrder(c.Request.Context(), c.Param("id")); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -68,7 +68,7 @@ func (h *OrderHandler) CancelOrder(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// ShipOrder transitions the order into shipped state.
+// ShipOrder 将订单状态更新为已发货。
 func (h *OrderHandler) ShipOrder(c *gin.Context) {
 	if err := h.service.ShipOrder(c.Request.Context(), c.Param("id")); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -78,7 +78,7 @@ func (h *OrderHandler) ShipOrder(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// CompleteOrder marks the order as completed.
+// CompleteOrder 将订单标记为已完成。
 func (h *OrderHandler) CompleteOrder(c *gin.Context) {
 	if err := h.service.CompleteOrder(c.Request.Context(), c.Param("id")); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

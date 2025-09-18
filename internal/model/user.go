@@ -1,6 +1,6 @@
 package model
 
-// User represents a shopper authenticated through WeChat.
+// User 表示通过微信完成认证的顾客。
 type User struct {
 	ID            string `json:"id"`
 	WeChatOpenID  string `json:"wechat_open_id"`
@@ -10,7 +10,7 @@ type User struct {
 	DefaultAddrID string `json:"default_address_id"`
 }
 
-// Address captures a shipping destination for an order.
+// Address 表示订单的收货目的地。
 type Address struct {
 	ID         string `json:"id"`
 	UserID     string `json:"user_id"`

@@ -9,17 +9,17 @@ import (
 	"convenienceStore/internal/service"
 )
 
-// CartHandler manages shopping cart endpoints.
+// CartHandler 负责购物车相关的接口处理。
 type CartHandler struct {
 	service service.CartService
 }
 
-// NewCartHandler creates a CartHandler instance.
+// NewCartHandler 创建 CartHandler 实例。
 func NewCartHandler(service service.CartService) *CartHandler {
 	return &CartHandler{service: service}
 }
 
-// ListItems returns the cart content for a user.
+// ListItems 返回用户的购物车内容。
 func (h *CartHandler) ListItems(c *gin.Context) {
 	userID := c.Query("user_id")
 	items, err := h.service.ListItems(c.Request.Context(), userID)
@@ -31,7 +31,7 @@ func (h *CartHandler) ListItems(c *gin.Context) {
 	c.JSON(http.StatusOK, items)
 }
 
-// AddItem adds a new item to the cart.
+// AddItem 向购物车新增商品。
 func (h *CartHandler) AddItem(c *gin.Context) {
 	var item model.CartItem
 	if err := c.ShouldBindJSON(&item); err != nil {
@@ -47,7 +47,7 @@ func (h *CartHandler) AddItem(c *gin.Context) {
 	c.Status(http.StatusCreated)
 }
 
-// UpdateItem adjusts quantity or selection status of a cart entry.
+// UpdateItem 调整购物车条目的数量或选中状态。
 func (h *CartHandler) UpdateItem(c *gin.Context) {
 	var item model.CartItem
 	if err := c.ShouldBindJSON(&item); err != nil {
@@ -64,7 +64,7 @@ func (h *CartHandler) UpdateItem(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// RemoveItem removes an item from the cart.
+// RemoveItem 从购物车移除商品。
 func (h *CartHandler) RemoveItem(c *gin.Context) {
 	if err := h.service.RemoveItem(c.Request.Context(), c.Param("id")); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

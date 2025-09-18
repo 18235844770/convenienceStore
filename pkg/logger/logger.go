@@ -9,7 +9,7 @@ import (
 	"convenienceStore/pkg/config"
 )
 
-// FromConfig builds a ready to use logger from configuration.
+// FromConfig 根据配置构建一套开箱即用的日志记录器。
 func FromConfig(cfg config.LoggingConfig) *log.Logger {
 	flags := log.LstdFlags
 	if strings.EqualFold(cfg.Format, "detailed") {

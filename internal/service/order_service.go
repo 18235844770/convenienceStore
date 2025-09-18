@@ -9,7 +9,7 @@ import (
 	"convenienceStore/pkg/payment"
 )
 
-// OrderService coordinates order lifecycle operations.
+// OrderService 调度订单全生命周期的业务操作。
 type OrderService interface {
 	CreateOrder(ctx context.Context, order *model.Order) (*model.Order, error)
 	GetOrder(ctx context.Context, orderID string) (*model.Order, error)
@@ -24,7 +24,7 @@ type orderService struct {
 	deps Dependencies
 }
 
-// NewOrderService constructs the default OrderService implementation.
+// NewOrderService 构建默认的 OrderService 实现。
 func NewOrderService(deps Dependencies) OrderService {
 	return &orderService{deps: deps}
 }

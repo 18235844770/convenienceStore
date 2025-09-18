@@ -1,16 +1,14 @@
 package main
 
 import (
-	"log"
-
-	"github.com/gin-gonic/gin"
-
 	"convenienceStore/internal/handler"
 	"convenienceStore/internal/service"
 	"convenienceStore/pkg/config"
 	"convenienceStore/pkg/logger"
 	"convenienceStore/pkg/payment"
 	"convenienceStore/routes"
+	"github.com/gin-gonic/gin"
+	"log"
 )
 
 func main() {

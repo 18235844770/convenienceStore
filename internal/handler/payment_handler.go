@@ -8,17 +8,17 @@ import (
 	"convenienceStore/internal/service"
 )
 
-// PaymentHandler deals with payment related callbacks.
+// PaymentHandler 处理支付相关的回调。
 type PaymentHandler struct {
 	service service.PaymentService
 }
 
-// NewPaymentHandler creates a PaymentHandler instance.
+// NewPaymentHandler 创建 PaymentHandler 实例。
 func NewPaymentHandler(service service.PaymentService) *PaymentHandler {
 	return &PaymentHandler{service: service}
 }
 
-// HandleWeChatCallback processes async payment notifications from WeChat Pay.
+// HandleWeChatCallback 处理来自微信支付的异步通知。
 func (h *PaymentHandler) HandleWeChatCallback(c *gin.Context) {
 	payload, err := c.GetRawData()
 	if err != nil {

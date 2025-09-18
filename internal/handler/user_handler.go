@@ -9,17 +9,17 @@ import (
 	"convenienceStore/internal/service"
 )
 
-// UserHandler exposes user related HTTP endpoints.
+// UserHandler 对外提供用户相关的 HTTP 接口。
 type UserHandler struct {
 	service service.UserService
 }
 
-// NewUserHandler builds a new UserHandler instance.
+// NewUserHandler 构建新的 UserHandler 实例。
 func NewUserHandler(service service.UserService) *UserHandler {
 	return &UserHandler{service: service}
 }
 
-// WeChatLogin exchanges a WeChat auth code for a user session.
+// WeChatLogin 使用微信授权码换取用户会话。
 func (h *UserHandler) WeChatLogin(c *gin.Context) {
 	var req struct {
 		Code string `json:"code" binding:"required"`
@@ -38,7 +38,7 @@ func (h *UserHandler) WeChatLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// BindUser binds a user account with extra profile data.
+// BindUser 将用户账号与扩展档案数据绑定。
 func (h *UserHandler) BindUser(c *gin.Context) {
 	var req model.User
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -54,7 +54,7 @@ func (h *UserHandler) BindUser(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// ListAddresses returns every stored shipping address for the user.
+// ListAddresses 返回用户保存的全部收货地址。
 func (h *UserHandler) ListAddresses(c *gin.Context) {
 	userID := c.Query("user_id")
 	addresses, err := h.service.ListAddresses(c.Request.Context(), userID)
@@ -66,7 +66,7 @@ func (h *UserHandler) ListAddresses(c *gin.Context) {
 	c.JSON(http.StatusOK, addresses)
 }
 
-// CreateAddress stores a new shipping address for the user.
+// CreateAddress 为用户新增收货地址。
 func (h *UserHandler) CreateAddress(c *gin.Context) {
 	var req model.Address
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -82,7 +82,7 @@ func (h *UserHandler) CreateAddress(c *gin.Context) {
 	c.Status(http.StatusCreated)
 }
 
-// UpdateAddress updates an existing address.
+// UpdateAddress 更新已有的收货地址。
 func (h *UserHandler) UpdateAddress(c *gin.Context) {
 	var req model.Address
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -99,7 +99,7 @@ func (h *UserHandler) UpdateAddress(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// DeleteAddress removes the address from the user profile.
+// DeleteAddress 从用户资料中移除该地址。
 func (h *UserHandler) DeleteAddress(c *gin.Context) {
 	if err := h.service.DeleteAddress(c.Request.Context(), c.Param("id")); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

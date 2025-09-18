@@ -2,7 +2,7 @@ package handler
 
 import "convenienceStore/internal/service"
 
-// Handlers combines each domain specific HTTP handler.
+// Handlers 汇集各领域的 HTTP 处理器。
 type Handlers struct {
 	User     *UserHandler
 	Product  *ProductHandler
@@ -12,7 +12,7 @@ type Handlers struct {
 	Delivery *DeliveryHandler
 }
 
-// NewHandlers bootstraps handler instances from the service layer dependencies.
+// NewHandlers 基于服务层依赖初始化所有处理器实例。
 func NewHandlers(services service.Services) Handlers {
 	return Handlers{
 		User:     NewUserHandler(services.User),

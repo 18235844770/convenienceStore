@@ -8,20 +8,20 @@ import (
 	"convenienceStore/pkg/payment"
 )
 
-// AppConfig contains the consolidated application configuration schema.
+// AppConfig 包含整个应用的配置结构。
 type AppConfig struct {
 	Server  ServerConfig   `mapstructure:"server"`
 	Logging LoggingConfig  `mapstructure:"logging"`
 	Payment payment.Config `mapstructure:"payment"`
 }
 
-// ServerConfig defines HTTP server runtime options.
+// ServerConfig 定义 HTTP 服务器的运行时选项。
 type ServerConfig struct {
 	Host string `mapstructure:"host"`
 	Port int    `mapstructure:"port"`
 }
 
-// Address renders the listen address string expected by gin.Engine.Run.
+// Address 返回 gin.Engine.Run 所需的监听地址字符串。
 func (s ServerConfig) Address() string {
 	if s.Host == "" {
 		return fmt.Sprintf(":%d", s.Port)
@@ -29,13 +29,13 @@ func (s ServerConfig) Address() string {
 	return fmt.Sprintf("%s:%d", s.Host, s.Port)
 }
 
-// LoggingConfig captures structured logging settings.
+// LoggingConfig 描述结构化日志的相关设置。
 type LoggingConfig struct {
 	Level  string `mapstructure:"level"`
 	Format string `mapstructure:"format"`
 }
 
-// Load reads configuration values from disk into AppConfig.
+// Load 从磁盘读取配置并填充 AppConfig。
 func Load(path string) (*AppConfig, error) {
 	v := viper.New()
 	v.SetConfigFile(path)

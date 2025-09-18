@@ -6,7 +6,7 @@ import (
 	"convenienceStore/internal/model"
 )
 
-// CartService manages shopping cart operations.
+// CartService 负责处理购物车相关操作。
 type CartService interface {
 	ListItems(ctx context.Context, userID string) ([]model.CartItem, error)
 	AddItem(ctx context.Context, item *model.CartItem) error
@@ -18,7 +18,7 @@ type cartService struct {
 	deps Dependencies
 }
 
-// NewCartService returns a baseline cart service.
+// NewCartService 返回购物车服务的基础实现。
 func NewCartService(deps Dependencies) CartService {
 	return &cartService{deps: deps}
 }

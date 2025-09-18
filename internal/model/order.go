@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-// OrderStatus captures the lifecycle of an order.
+// OrderStatus 描述订单生命周期。
 type OrderStatus string
 
 const (
@@ -19,14 +19,14 @@ var (
 	_ = OrderStatusCancelled
 )
 
-// OrderItem represents a product purchased within an order.
+// OrderItem 表示订单中购买的单件商品。
 type OrderItem struct {
 	ProductID string  `json:"product_id"`
 	Quantity  int     `json:"quantity"`
 	Price     float64 `json:"price"`
 }
 
-// Order contains the purchase information and state transitions.
+// Order 包含订单的核心信息及状态流转。
 type Order struct {
 	ID        string      `json:"id"`
 	UserID    string      `json:"user_id"`
