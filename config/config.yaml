@@ -1,13 +1,24 @@
+﻿# 服务监听配置：影响 Gin 启动地址
 server:
+  # 服务绑定的主机地址，0.0.0.0 表示监听所有网卡
   host: 0.0.0.0
-  port: 8080
+  # HTTP 服务端口
+  port: 8081
 
+# 日志输出配置
 logging:
+  # 日志级别，例如 debug/info/warn/error
   level: info
+  # 日志格式，detailed 会包含短文件名
   format: detailed
 
+# 微信支付配置示例
 payment:
+  # 微信支付应用 AppID
   app_id: your-app-id
+  # 商户号 MchID
   mch_id: your-merchant-id
+  # 商户 API Key
   api_key: your-api-key
+  # 微信支付回调地址，应指向服务对外可访问 URL
   notify_url: https://example.com/api/payments/wechat/callback
