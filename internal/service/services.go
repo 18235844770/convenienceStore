@@ -1,6 +1,7 @@
 package service
 
 import (
+	"database/sql"
 	"log"
 
 	"convenienceStore/pkg/config"
@@ -11,6 +12,7 @@ import (
 type Dependencies struct {
 	Config  *config.AppConfig
 	Logger  *log.Logger
+	DB      *sql.DB
 	Payment payment.WeChatClient
 }
 

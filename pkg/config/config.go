@@ -10,9 +10,10 @@ import (
 
 // AppConfig 包含整个应用的配置结构。
 type AppConfig struct {
-	Server  ServerConfig   `mapstructure:"server"`
-	Logging LoggingConfig  `mapstructure:"logging"`
-	Payment payment.Config `mapstructure:"payment"`
+	Server   ServerConfig   `mapstructure:"server"`
+	Logging  LoggingConfig  `mapstructure:"logging"`
+	Database DatabaseConfig `mapstructure:"database"`
+	Payment  payment.Config `mapstructure:"payment"`
 }
 
 // ServerConfig 定义 HTTP 服务器的运行时选项。
@@ -33,6 +34,21 @@ func (s ServerConfig) Address() string {
 type LoggingConfig struct {
 	Level  string `mapstructure:"level"`
 	Format string `mapstructure:"format"`
+}
+
+// DatabaseConfig 描述 MySQL 数据库连接配置。
+type DatabaseConfig struct {
+	Host            string `mapstructure:"host"`
+	Port            int    `mapstructure:"port"`
+	User            string `mapstructure:"user"`
+	Password        string `mapstructure:"password"`
+	Name            string `mapstructure:"name"`
+	Charset         string `mapstructure:"charset"`
+	ParseTime       bool   `mapstructure:"parse_time"`
+	Loc             string `mapstructure:"loc"`
+	MaxOpenConns    int    `mapstructure:"max_open_conns"`
+	MaxIdleConns    int    `mapstructure:"max_idle_conns"`
+	ConnMaxLifetime string `mapstructure:"conn_max_lifetime"`
 }
 
 // Load 从磁盘读取配置并填充 AppConfig。

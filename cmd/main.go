@@ -1,14 +1,17 @@
 package main
 
 import (
+	"log"
+
+	"github.com/gin-gonic/gin"
+
 	"convenienceStore/internal/handler"
 	"convenienceStore/internal/service"
 	"convenienceStore/pkg/config"
+	"convenienceStore/pkg/database"
 	"convenienceStore/pkg/logger"
 	"convenienceStore/pkg/payment"
 	"convenienceStore/routes"
-	"github.com/gin-gonic/gin"
-	"log"
 )
 
 func main() {
@@ -19,11 +22,18 @@ func main() {
 
 	appLogger := logger.FromConfig(cfg.Logging)
 
+	db, err := database.NewMySQL(cfg.Database, appLogger)
+	if err != nil {
+		log.Fatalf("failed to connect mysql: %v", err)
+	}
+	defer db.Close()
+
 	paymentClient := payment.NewWeChatClient(cfg.Payment, appLogger)
 
 	services := service.NewServices(service.Dependencies{
 		Config:  cfg,
 		Logger:  appLogger,
+		DB:      db,
 		Payment: paymentClient,
 	})
 
