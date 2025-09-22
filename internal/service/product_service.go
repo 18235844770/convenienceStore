@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -26,19 +25,6 @@ type productService struct {
 // NewProductService creates a new ProductService implementation.
 func NewProductService(deps Dependencies) ProductService {
 	return &productService{deps: deps}
-}
-
-func parseStringArray(raw sql.NullString) []string {
-	if !raw.Valid || raw.String == "" {
-		return nil
-	}
-
-	var parsed []string
-	if err := json.Unmarshal([]byte(raw.String), &parsed); err != nil {
-		return nil
-	}
-
-	return parsed
 }
 
 func (s *productService) ListProducts(ctx context.Context, status *bool) ([]model.Product, error) {

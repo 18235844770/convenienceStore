@@ -41,12 +41,14 @@ func main() {
 
 	engine := gin.Default()
 	routes.RegisterRoutes(engine, routes.HandlerSet{
-		User:     handlers.User,
-		Product:  handlers.Product,
-		Cart:     handlers.Cart,
-		Order:    handlers.Order,
-		Payment:  handlers.Payment,
-		Delivery: handlers.Delivery,
+		User:         handlers.User,
+		Product:      handlers.Product,
+		AdminProduct: handlers.AdminProduct,
+		Upload:       handlers.Upload,
+		Cart:         handlers.Cart,
+		Order:        handlers.Order,
+		Payment:      handlers.Payment,
+		Delivery:     handlers.Delivery,
 	})
 
 	if err := engine.Run(cfg.Server.Address()); err != nil {

@@ -6,14 +6,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// HandlerSet 汇总应用所需的全部 HTTP 处理器。
+// HandlerSet 汇总应用所需的全量 HTTP 处理器。
 type HandlerSet struct {
-	User     *handler.UserHandler
-	Product  *handler.ProductHandler
-	Cart     *handler.CartHandler
-	Order    *handler.OrderHandler
-	Payment  *handler.PaymentHandler
-	Delivery *handler.DeliveryHandler
+	User         *handler.UserHandler
+	Product      *handler.ProductHandler
+	AdminProduct *handler.AdminProductHandler
+	Upload       *handler.UploadHandler
+	Cart         *handler.CartHandler
+	Order        *handler.OrderHandler
+	Payment      *handler.PaymentHandler
+	Delivery     *handler.DeliveryHandler
 }
 
 // RegisterRoutes 将各领域的路由绑定到对应处理器。
@@ -32,6 +34,17 @@ func RegisterRoutes(engine *gin.Engine, handlers HandlerSet) {
 	productGroup.GET("", handlers.Product.ListProducts)
 	productGroup.GET(":id", handlers.Product.GetProduct)
 	productGroup.POST(":id/validate", handlers.Product.ValidateInventory)
+
+	adminGroup := api.Group("/admin")
+	adminProducts := adminGroup.Group("/products")
+	adminProducts.GET("", handlers.AdminProduct.ListProducts)
+	adminProducts.GET("/:id", handlers.AdminProduct.GetProduct)
+	adminProducts.POST("", handlers.AdminProduct.CreateProduct)
+	adminProducts.PUT("/:id", handlers.AdminProduct.UpdateProduct)
+	adminProducts.DELETE("/:id", handlers.AdminProduct.DeleteProduct)
+	adminProducts.PATCH("/:id/status", handlers.AdminProduct.SetProductStatus)
+
+	adminGroup.POST("/uploads", handlers.Upload.UploadFile)
 
 	cartGroup := api.Group("/cart")
 	cartGroup.GET("", handlers.Cart.ListItems)
