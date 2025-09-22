@@ -1,6 +1,6 @@
 package model
 
-// Product 描述可供购买的商品。
+// Product represents an item that can be purchased.
 type Product struct {
 	ID          string   `json:"id"`
 	Name        string   `json:"name"`
@@ -8,4 +8,6 @@ type Product struct {
 	Price       float64  `json:"price"`
 	Stock       int      `json:"stock"`
 	Tags        []string `json:"tags"`
+	Images      []string `json:"images"`
+	IsActive    bool     `json:"is_active"`
 }

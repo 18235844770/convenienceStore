@@ -44,6 +44,8 @@ CREATE TABLE IF NOT EXISTS products (
     price DECIMAL(10,2) NOT NULL,
     stock INT NOT NULL DEFAULT 0,
     tags JSON NULL,
+    images JSON NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -87,17 +89,19 @@ CREATE TABLE IF NOT EXISTS order_items (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Seed products
-INSERT INTO products (id, name, description, price, stock, tags)
+INSERT INTO products (id, name, description, price, stock, tags, images, is_active)
 VALUES
-    ('sku_energy', 'Energy Drink', 'Energy drink to boost performance', 4.50, 500, JSON_ARRAY('drink', 'energy')),
-    ('sku_snack', 'Potato Chips', 'Classic potato chips', 6.80, 300, JSON_ARRAY('snack')),
-    ('sku_noodle', 'Instant Ramen', 'Quick instant ramen', 8.50, 200, JSON_ARRAY('instant', 'noodle'))
+    ('sku_energy', 'Energy Drink', 'Energy drink to boost performance', 4.50, 500, JSON_ARRAY('drink', 'energy'), JSON_ARRAY('/images/products/energy-1.png', '/images/products/energy-2.png'), TRUE),
+    ('sku_snack', 'Potato Chips', 'Classic potato chips', 6.80, 300, JSON_ARRAY('snack'), JSON_ARRAY('/images/products/chips-1.png'), TRUE),
+    ('sku_noodle', 'Instant Ramen', 'Quick instant ramen', 8.50, 200, JSON_ARRAY('instant', 'noodle'), JSON_ARRAY('/images/products/ramen-1.png', '/images/products/ramen-2.png'), TRUE)
 ON DUPLICATE KEY UPDATE
     name = VALUES(name),
     description = VALUES(description),
     price = VALUES(price),
     stock = VALUES(stock),
-    tags = VALUES(tags);
+    tags = VALUES(tags),
+    images = VALUES(images),
+    is_active = VALUES(is_active);
 
 -- Seed user and address
 INSERT INTO users (id, wechat_open_id, nickname, avatar_url, phone)

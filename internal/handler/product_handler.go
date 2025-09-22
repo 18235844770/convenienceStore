@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,19 +9,42 @@ import (
 	"convenienceStore/internal/service"
 )
 
-// ProductHandler 提供商品相关接口。
+// ProductHandler exposes product-related endpoints.
 type ProductHandler struct {
 	service service.ProductService
 }
 
-// NewProductHandler 创建 ProductHandler 实例。
+// NewProductHandler constructs a ProductHandler instance.
 func NewProductHandler(service service.ProductService) *ProductHandler {
 	return &ProductHandler{service: service}
 }
 
-// ListProducts 返回商品的分页视图。
+func parseStatusQuery(value string) (*bool, error) {
+	if value == "" {
+		return nil, nil
+	}
+
+	switch value {
+	case "active":
+		v := true
+		return &v, nil
+	case "inactive":
+		v := false
+		return &v, nil
+	default:
+		return nil, fmt.Errorf("invalid status value: %s", value)
+	}
+}
+
+// ListProducts returns a list of products, optionally filtered by status.
 func (h *ProductHandler) ListProducts(c *gin.Context) {
-	products, err := h.service.ListProducts(c.Request.Context())
+	statusFilter, err := parseStatusQuery(c.Query("status"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	products, err := h.service.ListProducts(c.Request.Context(), statusFilter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -29,9 +53,15 @@ func (h *ProductHandler) ListProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, products)
 }
 
-// GetProduct 按 ID 返回商品详情。
+// GetProduct returns a product by ID, optionally filtered by status.
 func (h *ProductHandler) GetProduct(c *gin.Context) {
-	product, err := h.service.GetProduct(c.Request.Context(), c.Param("id"))
+	statusFilter, err := parseStatusQuery(c.Query("status"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	product, err := h.service.GetProduct(c.Request.Context(), c.Param("id"), statusFilter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -40,7 +70,7 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, product)
 }
 
-// ValidateInventory 在下单前执行库存校验。
+// ValidateInventory checks stock availability before ordering.
 func (h *ProductHandler) ValidateInventory(c *gin.Context) {
 	var req struct {
 		Quantity int `json:"quantity" binding:"required"`

@@ -10,10 +10,10 @@ import (
 	"convenienceStore/internal/model"
 )
 
-// ProductService 提供商品目录相关的业务能力。
+// ProductService exposes product catalog operations.
 type ProductService interface {
-	ListProducts(ctx context.Context) ([]model.Product, error)
-	GetProduct(ctx context.Context, productID string) (*model.Product, error)
+	ListProducts(ctx context.Context, status *bool) ([]model.Product, error)
+	GetProduct(ctx context.Context, productID string, status *bool) (*model.Product, error)
 	ValidateInventory(ctx context.Context, productID string, quantity int) (bool, error)
 }
 
@@ -23,18 +23,38 @@ type productService struct {
 	deps Dependencies
 }
 
-// NewProductService 创建新的 ProductService 实现。
+// NewProductService creates a new ProductService implementation.
 func NewProductService(deps Dependencies) ProductService {
 	return &productService{deps: deps}
 }
 
-func (s *productService) ListProducts(ctx context.Context) ([]model.Product, error) {
+func parseStringArray(raw sql.NullString) []string {
+	if !raw.Valid || raw.String == "" {
+		return nil
+	}
+
+	var parsed []string
+	if err := json.Unmarshal([]byte(raw.String), &parsed); err != nil {
+		return nil
+	}
+
+	return parsed
+}
+
+func (s *productService) ListProducts(ctx context.Context, status *bool) ([]model.Product, error) {
 	if s.deps.DB == nil {
 		return nil, errProductDBUnavailable
 	}
 
-	const query = `SELECT id, name, description, price, stock, tags FROM products ORDER BY updated_at DESC`
-	rows, err := s.deps.DB.QueryContext(ctx, query)
+	query := `SELECT id, name, description, price, stock, tags, images, is_active FROM products`
+	var args []any
+	if status != nil {
+		query += ` WHERE is_active = ?`
+		args = append(args, *status)
+	}
+	query += ` ORDER BY updated_at DESC`
+
+	rows, err := s.deps.DB.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -44,16 +64,21 @@ func (s *productService) ListProducts(ctx context.Context) ([]model.Product, err
 	for rows.Next() {
 		var p model.Product
 		var tags sql.NullString
-		if err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Stock, &tags); err != nil {
+		var images sql.NullString
+		var isActive bool
+		if err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Stock, &tags, &images, &isActive); err != nil {
 			return nil, err
 		}
 
-		if tags.Valid && tags.String != "" {
-			var parsed []string
-			if err := json.Unmarshal([]byte(tags.String), &parsed); err == nil {
-				p.Tags = parsed
-			}
+		if parsedTags := parseStringArray(tags); parsedTags != nil {
+			p.Tags = parsedTags
 		}
+
+		if parsedImages := parseStringArray(images); parsedImages != nil {
+			p.Images = parsedImages
+		}
+
+		p.IsActive = isActive
 
 		products = append(products, p)
 	}
@@ -65,27 +90,38 @@ func (s *productService) ListProducts(ctx context.Context) ([]model.Product, err
 	return products, nil
 }
 
-func (s *productService) GetProduct(ctx context.Context, productID string) (*model.Product, error) {
+func (s *productService) GetProduct(ctx context.Context, productID string, status *bool) (*model.Product, error) {
 	if s.deps.DB == nil {
 		return nil, errProductDBUnavailable
 	}
 
-	const query = `SELECT id, name, description, price, stock, tags FROM products WHERE id = ?`
+	query := `SELECT id, name, description, price, stock, tags, images, is_active FROM products WHERE id = ?`
+	args := []any{productID}
+	if status != nil {
+		query += ` AND is_active = ?`
+		args = append(args, *status)
+	}
+
 	var p model.Product
 	var tags sql.NullString
-	if err := s.deps.DB.QueryRowContext(ctx, query, productID).Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Stock, &tags); err != nil {
+	var images sql.NullString
+	var isActive bool
+	if err := s.deps.DB.QueryRowContext(ctx, query, args...).Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Stock, &tags, &images, &isActive); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("product %s not found", productID)
 		}
 		return nil, err
 	}
 
-	if tags.Valid && tags.String != "" {
-		var parsed []string
-		if err := json.Unmarshal([]byte(tags.String), &parsed); err == nil {
-			p.Tags = parsed
-		}
+	if parsedTags := parseStringArray(tags); parsedTags != nil {
+		p.Tags = parsedTags
 	}
+
+	if parsedImages := parseStringArray(images); parsedImages != nil {
+		p.Images = parsedImages
+	}
+
+	p.IsActive = isActive
 
 	return &p, nil
 }
